@@ -463,7 +463,7 @@ export default function riskPdcaExtension(pi: ExtensionAPI) {
 									riskScore: risk.riskScore,
 									priorityDensity: risk.priorityDensity,
 								})),
-							},
+							} as any,
 							questions,
 						},
 						{ signal },
