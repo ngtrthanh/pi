@@ -296,6 +296,37 @@ describe("Session protocol", () => {
 		await expect(first).resolves.toMatchObject({ ok: true });
 	});
 
+	test("admits concurrent service calls from two attached clients", async () => {
+		const host = new TestServerHost();
+		await host.seed("session-1");
+		const server = createServer(host);
+		const firstClient = connect(server);
+		const secondClient = connect(server);
+		await Promise.all([firstClient.hello(), secondClient.hello()]);
+		await Promise.all([
+			firstClient.attach(serverId, "session-1"),
+			secondClient.attach(serverId, "session-1"),
+		]);
+
+		const harness = host.latestHarness("session-1");
+		const gate = harness.gateNextServiceCall();
+		const first = firstClient.requestSessionService(serverId, "session-1", sessionCall("run", ["first-client"]));
+		await gate.entered.promise;
+		const second = secondClient.requestSessionService(
+			serverId,
+			"session-1",
+			sessionCall("run", ["second-client"]),
+		);
+
+		await expect(second).resolves.toMatchObject({ ok: true });
+		expect(harness.serviceCalls).toEqual([
+			sessionCall("run", ["first-client"]),
+			sessionCall("run", ["second-client"]),
+		]);
+		gate.release.resolve(undefined);
+		await expect(first).resolves.toMatchObject({ ok: true });
+	});
+
 	test("keeps attachment demand until an accepted service call settles after disconnect", async () => {
 		const host = new TestServerHost();
 		await host.seed("session-1");
