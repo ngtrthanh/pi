@@ -50,4 +50,4 @@ jobs:
       - name: T3 Multi-client steering and reconnect
         working-directory: packages/server
         run: |
-          npx vitest --run             test/conformance.test.ts             --reporter=verbose             -t "permits multiple client attachments|requires the requesting client|rejects a stale attachment|admits concurrent service calls|keeps attachment demand|invalidates a terminated Harness handle|connection loss releases"
+          npx vitest --run             test/conformance.test.ts             --reporter=verbose             -t "permits multiple client attachments|requires the requesting client|rejects a stale attachment|admits concurrent service calls|admits concurrent service calls from two attached clients|keeps attachment demand|invalidates a terminated Harness handle|connection loss releases"
