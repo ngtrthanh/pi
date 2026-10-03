@@ -42,6 +42,7 @@ cp permission-gate.ts ~/.pi/agent/extensions/
 | `truncated-tool.ts` | Wraps ripgrep with proper output truncation (50KB/2000 lines) |
 | `ssh.ts` | Delegate all tools to a remote machine via SSH using pluggable operations |
 | `subagent/` | Delegate tasks to specialized subagents with isolated context windows |
+| `risk-pdca/` | Risk-driven PDCA spiral supervisor with resource envelope, evidence gates, residual-risk carryover, and optional Jev triage |
 
 ### Commands & UI
 
