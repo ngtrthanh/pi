@@ -1,0 +1,11 @@
+external_id,title,asset_code,description,priority,status,assignee,due_date
+EXT-001,Inspect conveyor head pulley,CV-101,Noise reported during night shift,HIGH,OPEN,An,2026-10-05
+EXT-002,Replace damaged light,LGT-07,North walkway light failed,MEDIUM,PLANNED,Binh,2026-10-08
+EXT-003,Investigate hydraulic leak,CR-02,Small leak near hose coupling,CRITICAL,IN_PROGRESS,Cuong,2026-10-03
+EXT-004,Clean scale camera,SC-01,Lens visibility degraded,LOW,OPEN,Dung,2026-10-12
+EXT-005,Check emergency stop,CV-204,Intermittent feedback signal,HIGH,BLOCKED,Hai,2026-10-04
+EXT-006,Grease bearing,CR-03,Weekly preventive task,MEDIUM,OPEN,An,2026-10-06
+EXT-007,Repair roof leak,WH-01,Water observed after heavy rain,HIGH,PLANNED,Binh,2026-10-10
+EXT-008,INVALID PRIORITY TEST,CV-300,This row must be rejected,URGENT,OPEN,Cuong,2026-10-09
+EXT-009,Inspect RFID reader,RFID-2,Occasional missed reads,MEDIUM,OPEN,Dung,2026-10-07
+EXT-010,Test backup scale,SC-02,Monthly functional test,LOW,OPEN,Hai,2026-10-15
