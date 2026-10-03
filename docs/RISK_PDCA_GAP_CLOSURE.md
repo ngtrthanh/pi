@@ -125,3 +125,42 @@ Exit evidence:
 ## Cycle 2 entry condition
 
 Only begin after Cycle 1 has build/test evidence. Then inspect Execution Environment first, create concrete risks, and select a bounded subset by risk reduction per complexity.
+
+
+## Source-inspection findings after Cycle 1 implementation
+
+### Execution Environment boundary
+
+`ExecutionEnv` is deliberately a portable `FileSystem + Shell` capability with a stable filesystem identity. The host supplies the environment factory. Provisioning, container lifecycle, quotas, and tenant isolation are therefore composition-layer concerns unless repeated implementations reveal a smaller reusable contract.
+
+Decision: **do not add container/platform lifecycle to the durable core in Cycle 1**.
+
+### Multiplayer boundary
+
+Durable already exposes committed conversation views and exact-frame watches. The server has per-client session attachments and fences calls to `serverId + sessionId + attachmentId`.
+
+The byte transport is explicitly documented as an already-authorized connection. Authentication belongs before the Pi byte connection boundary.
+
+Decision: **do not put login/auth tokens into the Pi wire protocol merely to raise a maturity score**.
+
+### Production gap: control-plane composition
+
+The remaining production gap is better represented as a layer above the existing primitives:
+
+```text
+clients
+  |
+identity / authorization / quotas / audit
+  |
+Pi server + protocol
+  |
+Durable conversations/tasks/state
+  |
+managed ExecutionEnv provider
+```
+
+Candidate Cycle 2 artifact: a small reference control-plane host that composes these boundaries without changing the Pi conversation/tool/task ontology.
+
+### Current residual risk
+
+GitHub Actions has not produced a workflow run for this fork/PR yet. Cycle 1 is therefore **not baseline-promoted**. Mergeability alone is not build/test evidence.
