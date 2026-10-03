@@ -10,7 +10,7 @@
  * conversation branch and reconstructs correctly after tree navigation/forks.
  *
  * Optional Jev integration:
- * - if typesafe/jev-latest is available, \`jev_triage\` asks Jev to classify
+ * - if typesafe/jev-latest is available, `jev_triage` asks Jev to classify
  *   undecided risks in one structured classifier call;
  * - recommendations carry probability/confidence;
  * - auto-apply is opt-in and confidence-gated;
@@ -139,11 +139,11 @@ function priorityDensity(impact: number, likelihood: number, urgency: number, ef
 }
 
 function formatRisk(risk: RiskItem): string {
-	const decision = risk.disposition ? \` -> \${risk.disposition}\` : "";
-	const recommendation = risk.jev
-		? \` [jev=\${risk.jev.disposition}\${risk.jev.confidence === undefined ? "" : \`@\${risk.jev.confidence.toFixed(2)}\`}]\`
-		: "";
-	return \`R\${risk.id} [risk=\${risk.riskScore}, density=\${risk.priorityDensity}] \${risk.title}\${decision}\${recommendation}\`;
+	const decision = risk.disposition ? ` -> ${risk.disposition}` : "";
+	const confidence =
+		risk.jev?.confidence === undefined ? "" : `@${risk.jev.confidence.toFixed(2)}`;
+	const recommendation = risk.jev ? ` [jev=${risk.jev.disposition}${confidence}]` : "";
+	return `R${risk.id} [risk=${risk.riskScore}, density=${risk.priorityDensity}] ${risk.title}${decision}${recommendation}`;
 }
 
 function selectedThisCycle(state: SpiralState): RiskItem[] {
@@ -169,17 +169,17 @@ function formatState(state: SpiralState): string {
 	const latestBaseline = state.baselines.at(-1);
 
 	return [
-		\`PDCA spiral: \${state.enabled ? "enabled" : "disabled"}\`,
-		\`cycle=\${state.cycle} phase=\${state.phase}\`,
-		\`objective=\${state.objective ?? "(unset)"}\`,
-		\`resources=\${JSON.stringify(state.resources)}\`,
-		\`selected=\${selected.length}\${selected.length ? \`\\n  \${selected.map(formatRisk).join("\\n  ")}\` : ""}\`,
-		\`undecided=\${undecided.length}\${undecided.length ? \`\\n  \${undecided.map(formatRisk).join("\\n  ")}\` : ""}\`,
-		\`deferred=\${deferred.length}\`,
-		\`accepted=\${accepted.length}\`,
-		\`evidence=\${state.evidence.length}\`,
-		\`baseline=\${latestBaseline ? \`cycle \${latestBaseline.cycle}: \${latestBaseline.summary}\` : "(none)"}\`,
-	].join("\\n");
+		`PDCA spiral: ${state.enabled ? "enabled" : "disabled"}`,
+		`cycle=${state.cycle} phase=${state.phase}`,
+		`objective=${state.objective ?? "(unset)"}`,
+		`resources=${JSON.stringify(state.resources)}`,
+		`selected=${selected.length}${selected.length ? `\n  ${selected.map(formatRisk).join("\n  ")}` : ""}`,
+		`undecided=${undecided.length}${undecided.length ? `\n  ${undecided.map(formatRisk).join("\n  ")}` : ""}`,
+		`deferred=${deferred.length}`,
+		`accepted=${accepted.length}`,
+		`evidence=${state.evidence.length}`,
+		`baseline=${latestBaseline ? `cycle ${latestBaseline.cycle}: ${latestBaseline.summary}` : "(none)"}`,
+	].join("\n");
 }
 
 function policyText(state: SpiralState): string {
@@ -187,37 +187,37 @@ function policyText(state: SpiralState): string {
 	const openRisks = state.risks.filter((risk) => risk.status === "open");
 	const latestBaseline = state.baselines.at(-1);
 
-	return \`
-## Risk-driven PDCA spiral
-
-This session has a lightweight PDCA spiral supervisor. Treat it as governance, not as a replacement for the user's objective.
-
-Current control state:
-- cycle: \${state.cycle}
-- phase: \${state.phase}
-- objective: \${state.objective ?? "not set yet"}
-- resource envelope: \${JSON.stringify(state.resources)}
-- latest baseline: \${latestBaseline?.summary ?? "none"}
-- open risks: \${openRisks.length}
-- selected for this cycle: \${selected.length}
-
-Rules:
-1. For material multi-step work, keep the objective explicit and observe current state before changing it.
-2. Record material uncertainty, failure modes, blockers, unsafe side effects, or missing capability as risks with \`risk_pdca\`.
-3. Resources are bounded. Finding a problem does not automatically authorize work on it.
-4. Risk scores and priority density are heuristics only. Also consider dependencies, reversibility, user intent, and consequences of delay.
-5. Classify work as \`do_now\`, \`this_cycle\`, \`next_cycle\`, \`backlog\`, or \`accept\`. Only \`do_now\` and \`this_cycle\` belong in the active plan.
-6. A CHECK must cite objective evidence: tests, command output, metrics, logs, diffs, documents, or explicit human acceptance. "Looks good" is not evidence.
-7. A failed CHECK does not automatically mean fix now. Record/reassess the residual risk and defer it when acceptable inside the current resource envelope.
-8. Resolve a treated risk only with recorded evidence.
-9. Promote a new baseline only after evidence supports it. Standardization can be code, config, tests, runbooks, docs, or another durable known-good state.
-10. At the end of a cycle, reassess residual risks and carry deferred work into the next spiral.
-11. Jev recommendations are decision support, not proof. Low-confidence recommendations stay undecided.
-12. Do not create busywork merely to advance PDCA phases. Trivial requests may skip the spiral.
-
-Selected risks for this cycle:
-\${selected.length ? selected.map((risk) => \`- \${formatRisk(risk)}\`).join("\\n") : "- none"}
-\`;
+	return [
+		"## Risk-driven PDCA spiral",
+		"",
+		"This session has a lightweight PDCA spiral supervisor. Treat it as governance, not as a replacement for the user's objective.",
+		"",
+		"Current control state:",
+		`- cycle: ${state.cycle}`,
+		`- phase: ${state.phase}`,
+		`- objective: ${state.objective ?? "not set yet"}`,
+		`- resource envelope: ${JSON.stringify(state.resources)}`,
+		`- latest baseline: ${latestBaseline?.summary ?? "none"}`,
+		`- open risks: ${openRisks.length}`,
+		`- selected for this cycle: ${selected.length}`,
+		"",
+		"Rules:",
+		"1. For material multi-step work, keep the objective explicit and observe current state before changing it.",
+		"2. Record material uncertainty, failure modes, blockers, unsafe side effects, or missing capability as risks with `risk_pdca`.",
+		"3. Resources are bounded. Finding a problem does not automatically authorize work on it.",
+		"4. Risk scores and priority density are heuristics only. Also consider dependencies, reversibility, user intent, and consequences of delay.",
+		"5. Classify work as `do_now`, `this_cycle`, `next_cycle`, `backlog`, or `accept`. Only `do_now` and `this_cycle` belong in the active plan.",
+		"6. A CHECK must cite objective evidence: tests, command output, metrics, logs, diffs, documents, or explicit human acceptance. \"Looks good\" is not evidence.",
+		"7. A failed CHECK does not automatically mean fix now. Record/reassess the residual risk and defer it when acceptable inside the current resource envelope.",
+		"8. Resolve a treated risk only with recorded evidence.",
+		"9. Promote a new baseline only after evidence supports it. Standardization can be code, config, tests, runbooks, docs, or another durable known-good state.",
+		"10. At the end of a cycle, reassess residual risks and carry deferred work into the next spiral.",
+		"11. Jev recommendations are decision support, not proof. Low-confidence recommendations stay undecided.",
+		"12. Do not create busywork merely to advance PDCA phases. Trivial requests may skip the spiral.",
+		"",
+		"Selected risks for this cycle:",
+		selected.length ? selected.map((risk) => `- ${formatRisk(risk)}`).join("\n") : "- none",
+	].join("\n");
 }
 
 function reconstructState(ctx: ExtensionContext): SpiralState {
@@ -235,7 +235,7 @@ function applyDisposition(state: SpiralState, risk: RiskItem, disposition: RiskD
 		const alreadySelected = selectedThisCycle(state).filter((item) => item.id !== risk.id).length;
 		if (alreadySelected >= state.resources.maxTasks) {
 			throw new Error(
-				\`resource envelope maxTasks=\${state.resources.maxTasks} is full; defer this risk or change the envelope\`,
+				`resource envelope maxTasks=${state.resources.maxTasks} is full; defer this risk or change the envelope`,
 			);
 		}
 	}
@@ -407,7 +407,7 @@ export default function riskPdcaExtension(pi: ExtensionAPI) {
 						throw new Error("riskId and disposition are required");
 					}
 					const risk = state.risks.find((item) => item.id === params.riskId);
-					if (!risk) throw new Error(\`risk R\${params.riskId} not found\`);
+					if (!risk) throw new Error(`risk R${params.riskId} not found`);
 					applyDisposition(state, risk, params.disposition, params.rationale);
 					persist();
 					break;
@@ -426,7 +426,7 @@ export default function riskPdcaExtension(pi: ExtensionAPI) {
 
 					const questions: Record<string, any> = {};
 					for (const risk of candidates) {
-						questions[\`r\${risk.id}\`] = {
+						questions[`r${risk.id}`] = {
 							type: "choice",
 							instructions:
 								"Choose the most justified disposition for this risk under the stated objective and resource envelope. Prefer deferral over scope expansion when residual risk is tolerable.",
@@ -469,12 +469,12 @@ export default function riskPdcaExtension(pi: ExtensionAPI) {
 						{ signal },
 					);
 
-					if (result.stopReason !== "stop") throw new Error(\`Jev triage stopped: \${result.stopReason}\`);
+					if (result.stopReason !== "stop") throw new Error(`Jev triage stopped: ${result.stopReason}`);
 
 					const answers = result.answers as Record<string, any>;
 					const minConfidence = params.minConfidence ?? 0.8;
 					for (const risk of candidates) {
-						const answer = answers[\`r\${risk.id}\`];
+						const answer = answers[`r${risk.id}`];
 						if (answer?.type !== "choice") continue;
 						const disposition = answer.choice as RiskDisposition;
 						if (!["do_now", "this_cycle", "next_cycle", "backlog", "accept"].includes(disposition)) continue;
@@ -493,7 +493,7 @@ export default function riskPdcaExtension(pi: ExtensionAPI) {
 									state,
 									risk,
 									disposition,
-									\`Jev auto-apply at confidence \${confidence?.toFixed(2) ?? "unknown"}\`,
+									`Jev auto-apply at confidence ${confidence?.toFixed(2) ?? "unknown"}`,
 								);
 							} catch {
 								// Keep the recommendation but do not override deterministic resource policy.
@@ -525,9 +525,9 @@ export default function riskPdcaExtension(pi: ExtensionAPI) {
 					if (ids.length === 0) throw new Error("at least one evidenceId is required to resolve a risk");
 					const known = new Set(state.evidence.map((item) => item.id));
 					const missing = ids.filter((id) => !known.has(id));
-					if (missing.length) throw new Error(\`unknown evidence id(s): \${missing.join(", ")}\`);
+					if (missing.length) throw new Error(`unknown evidence id(s): ${missing.join(", ")}`);
 					const risk = state.risks.find((item) => item.id === params.riskId);
-					if (!risk) throw new Error(\`risk R\${params.riskId} not found\`);
+					if (!risk) throw new Error(`risk R${params.riskId} not found`);
 					risk.status = "treated";
 					risk.updatedCycle = state.cycle;
 					risk.rationale = params.rationale?.trim() ?? risk.rationale;
@@ -547,7 +547,7 @@ export default function riskPdcaExtension(pi: ExtensionAPI) {
 					if (ids.length === 0) throw new Error("at least one evidenceId is required");
 					const known = new Set(state.evidence.map((item) => item.id));
 					const missing = ids.filter((id) => !known.has(id));
-					if (missing.length) throw new Error(\`unknown evidence id(s): \${missing.join(", ")}\`);
+					if (missing.length) throw new Error(`unknown evidence id(s): ${missing.join(", ")}`);
 					state.baselines.push({
 						cycle: state.cycle,
 						summary: params.summary.trim(),
